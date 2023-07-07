@@ -4,6 +4,7 @@ import { Hero } from '../hero';
 import { FormsModule } from '@angular/forms';
 import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
 import { HeroService } from '../hero.service';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-heros',
@@ -15,7 +16,8 @@ import { HeroService } from '../hero.service';
 export class HerosComponent implements OnInit {
   heros: Hero[] = [];
   selectedHero?: Hero;
-  heroService: HeroService = inject(HeroService);
+  private heroService: HeroService = inject(HeroService);
+  private messageService: MessageService = inject(MessageService);
 
   constructor() {}
   ngOnInit(): void {
@@ -23,6 +25,7 @@ export class HerosComponent implements OnInit {
   }
   onSelect(hero: Hero) {
     this.selectedHero = hero;
+    this.messageService.add(`HerosComponent : Selected hero id=${hero.id}`);
   }
   getHeros(): void {
     this.heroService.getHeros().subscribe((heros) => (this.heros = heros));
