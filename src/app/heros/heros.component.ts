@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
 import { HeroService } from '../hero.service';
 import { MessageService } from '../message.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-heros',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeroDetailComponent],
+  imports: [CommonModule, FormsModule, HeroDetailComponent, RouterLink],
   templateUrl: './heros.component.html',
   styleUrls: ['./heros.component.css'],
 })
@@ -23,11 +24,24 @@ export class HerosComponent implements OnInit {
   ngOnInit(): void {
     this.getHeros();
   }
-  onSelect(hero: Hero) {
-    this.selectedHero = hero;
-    this.messageService.add(`HerosComponent : Selected hero id=${hero.id}`);
-  }
+
   getHeros(): void {
     this.heroService.getHeros().subscribe((heros) => (this.heros = heros));
+  }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) {
+      return;
+    }
+
+    this.heroService.addHero({ name } as Hero).subscribe((hero) => {
+      this.heros.push(hero);
+    });
+  }
+
+  delete(hero: Hero): void {
+    this.heros = this.heros.filter((h) => h !== hero);
+    this.heroService.deleteHero(hero.id).subscribe();
   }
 }
